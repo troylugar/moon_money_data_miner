@@ -7,6 +7,7 @@ from praw.reddit import Submission
 
 load_dotenv()
 
+
 class FetchRedditData(luigi.Task):
     subreddit = luigi.Parameter()
     limit = luigi.IntParameter(default=100)
@@ -28,6 +29,7 @@ class FetchRedditData(luigi.Task):
         pd.DataFrame(list(data)).to_sql('submissions', engine, if_exists='append', index=False)
         self.task_complete = True
 
+
 class DedupRedditData(luigi.Task):
     subreddit = luigi.Parameter()
     limit = luigi.IntParameter(default=100)
@@ -40,6 +42,7 @@ class DedupRedditData(luigi.Task):
         engine = create_engine(os.getenv('PG_STRING'))
         with open('sql/reddit_dedup.sql', 'r') as f:
             engine.execute(f.read())
+
 
 if __name__ == '__main__':
     use_local_scheduler = os.getenv('ENV') == 'DEVELOPMENT'

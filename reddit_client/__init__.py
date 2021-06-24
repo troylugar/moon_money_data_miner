@@ -1,10 +1,7 @@
 import logging
 from datetime import datetime
-from dataclasses import dataclass
-from typing import Generator, Optional
+from typing import Optional
 from praw import Reddit
-import prawcore
-from .models import Submission
 
 
 logger = logging.Logger(__name__)
