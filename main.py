@@ -4,6 +4,7 @@ import os
 import pandas as pd
 from dotenv import load_dotenv
 from praw.reddit import Submission
+from helpers import find_ticker
 
 load_dotenv()
 
@@ -26,7 +27,10 @@ class FetchRedditData(luigi.Task):
         )
         engine = create_engine(os.getenv('PG_STRING'))
         data = reddit.get_hot_submissions(self.subreddit, self.limit)
-        pd.DataFrame(list(data)).to_sql('submissions', engine, if_exists='append', index=False)
+        df = pd.DataFrame(list(data))
+        df['stock_mentioned'] = df['title'].combine(df['selftext'], lambda x, y: f'{x}{y}').apply(find_ticker)
+        df.to_csv('test.csv')
+        df.to_sql('submissions', engine, if_exists='append', index=False)
         self.task_complete = True
 
 
